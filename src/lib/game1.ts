@@ -1,6 +1,6 @@
 //var Example = Example || {};
 
-import Matter, { Bodies, Body, Composite, Events } from "matter-js";
+import Matter, { Bodies, Body, Common, Composite, Events } from "matter-js";
 import {
   EventClick,
   EventTouch,
@@ -8,6 +8,9 @@ import {
   ShapeDefs,
   TShape,
 } from "./types";
+/*
+import * as decomp from "poly-decomp"; 
+Common.setDecomp(decomp);
 /*
 let elems = {
     lshape: () => {
@@ -94,16 +97,76 @@ export const tetris = (
   Runner.run(runner, engine);
 
   var group = Body.nextGroup(true);
-
+  /*
   var catapult = Bodies.rectangle(400, 550, 320, 20, {
     label: "catapult",
     collisionFilter: { group: group },
     friction,
   });
-  hay.push(catapult);
+  *
+  var catapult2 = Bodies.fromVertices(
+    400,
+    550,
+    [
+      [
+        { x: 16, y: 7 },
+        { x: 26, y: 17 },
+        { x: 167, y: 17 },
+        { x: 176, y: 7 },
+        { x: 167, y: 37 },
+        { x: 26, y: 37 },
+        { x: 16, y: 7 },
+      ],
+    ],
+    {
+      position: { x: 400, y: 550 },
+      label: "catapult",
+      collisionFilter: { group },
+      friction,
+    }
+  );
+  */
+  let cataProp = {
+    collisionFilter: { group },
+    friction,
+    label: "catapult",
+    render: {
+      fillStyle: "#d55",
+    },
+  };
+
+  var catapult2 = Body.create({
+    parts: [
+      Bodies.rectangle(200, 540, 20, 40, cataProp),
+      Bodies.rectangle(400, 550, 380, 20, cataProp),
+      Bodies.rectangle(600, 540, 20, 40, cataProp),
+    ],
+    ...cataProp,
+  });
+  /*
+    Body.create({
+    vertices: [
+      { x: 16, y: 7 },
+      { x: 26, y: 17 },
+      { x: 167, y: 17 },
+      { x: 176, y: 7 },
+      { x: 167, y: 37 },
+      { x: 26, y: 37 },
+      { x: 16, y: 7 },
+    ],
+    bounds:
+    position: { x: 400, y: 550 },
+    label: "catapult",
+    collisionFilter: { group },
+    friction,
+  });
+  */
+  //hay.push(catapult);
+  hay.push(...catapult2.parts);
   activeBody = createShapes("mirrorl", 400);
   Composite.add(world, [
-    catapult,
+    //catapult,
+    catapult2,
     activeBody,
     Bodies.rectangle(400, 600, 800, 50.5, {
       label: "floor",
@@ -117,9 +180,9 @@ export const tetris = (
     }),
 
     Constraint.create({
-      bodyA: catapult,
-      pointB: Vector.clone(catapult.position),
-      stiffness: 0.2,
+      bodyA: catapult2,
+      pointB: Vector.clone(catapult2.position),
+      stiffness: 0.5,
       length: 0,
     }),
   ]);
@@ -127,7 +190,7 @@ export const tetris = (
     let shapes = "l,mirrorl,T,box,stick,z,s".split(",") as TShape[];
     let newShape = createShapes(
       shapes[Math.floor(Math.random() * shapes.length)],
-      w4 + Math.random() * (w4 * 2)
+      w4 / 2 + Math.random() * (w4 / 3)
     );
     score += 4;
     cb({ type: "score", data: score });
@@ -154,7 +217,7 @@ export const tetris = (
   // fit the render viewport to the scene
   Render.lookAt(render, {
     min: { x: 0, y: 0 },
-    max: { x: 800, y: 600 },
+    max: { x: 800, y: 800 },
   });
 
   Events.on(engine, "beforeUpdate", () => {
@@ -181,7 +244,6 @@ export const tetris = (
     for (var i = 0; i < pairs.length; i++) {
       var pair = pairs[i];
       let weTouchedFloor;
-
       if (hay.includes(pair.bodyA) && hay.includes(pair.bodyB)) {
         continue;
       } else if (
@@ -221,7 +283,6 @@ export const tetris = (
     );
     if (!location) return;
     if (event.offsetY < 200) {
-      //activeBody.bodies.forEach((b) =>
       Body.applyForce(
         activeBody.bodies[0],
         {
