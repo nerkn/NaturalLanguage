@@ -1,14 +1,7 @@
 //var Example = Example || {};
 
 import Matter, { Bodies, Body, Composite, Events } from "matter-js";
-import {
-  EventClick,
-  EventTouch,
-  ShapeColors,
-  ShapeDefs,
-  TButton,
-  TShape,
-} from "./types";
+import { ShapeColors, ShapeDefs, TButton, TShape } from "./types";
 let force = 0.005;
 let friction = 0.001;
 function createShapes(shape: TShape, xOffset: number) {
