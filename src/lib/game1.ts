@@ -6,7 +6,6 @@ let force = 0.005;
 let friction = 0.001;
 function createShapes(shape: TShape, xOffset: number) {
   let parts = [];
-  console.log("shape", shape, "xOffset", xOffset);
   let definition = ShapeDefs[shape].split(",");
   for (let defindex = 0; defindex < definition.length; defindex += 2) {
     parts.push(
@@ -52,7 +51,8 @@ export const tetris = (
     activeBody: Matter.Composite,
     hay: Matter.Body[] = [],
     score = 0,
-    w4 = gamePlace.clientWidth / 4;
+    w4 = gamePlace.clientWidth / 4,
+    canvasSize = { x: 500, y: 900 };
 
   // create engine
   var engine = Engine.create({ gravity: { y: 0.1 } }),
@@ -68,8 +68,8 @@ export const tetris = (
       //showIds: true,
       wireframes: false,
       //showAngleIndicator: true,
-      showCollisions: true,
-      //   showVelocity: true,
+      //showCollisions: true,
+      showVelocity: true,
     },
   });
 
@@ -92,32 +92,38 @@ export const tetris = (
 
   var catapult2 = Body.create({
     parts: [
-      Bodies.rectangle(200, 540, 20, 40, cataProp),
-      Bodies.rectangle(400, 550, 380, 20, cataProp),
-      Bodies.rectangle(600, 540, 20, 40, cataProp),
+      Bodies.rectangle(50, canvasSize.y - 60, 20, 40, cataProp),
+      Bodies.rectangle(
+        canvasSize.x / 2,
+        canvasSize.y - 50,
+        canvasSize.x - 100,
+        20,
+        cataProp
+      ),
+      Bodies.rectangle(canvasSize.x - 50, canvasSize.y - 60, 20, 40, cataProp),
     ],
     ...cataProp,
   });
 
   var buttons = [
     createButtons(50, 50, "rleft"),
-    createButtons(50, 350, "left"),
-    createButtons(750, 50, "rright"),
-    createButtons(750, 350, "right"),
+    createButtons(50, canvasSize.y / 2, "left"),
+    createButtons(canvasSize.x - 50, 50, "rright"),
+    createButtons(canvasSize.x - 50, canvasSize.y / 2, "right"),
   ];
   hay.push(...catapult2.parts);
-  activeBody = createShapes("mirrorl", 400);
+  activeBody = createShapes("mirrorl", canvasSize.x / 2);
   Composite.add(world, [
     //catapult,
     catapult2,
     ...buttons,
     activeBody,
-    Bodies.rectangle(400, 600, 800, 50.5, {
+    Bodies.rectangle(canvasSize.x / 2, canvasSize.y, canvasSize.x * 5, 20, {
       label: "floor",
       isStatic: true,
       render: { fillStyle: "#060a19" },
     }),
-    Bodies.rectangle(400, 565, 20, 30, {
+    Bodies.rectangle(canvasSize.x / 2, canvasSize.y - 20, 20, 30, {
       isStatic: true,
       collisionFilter: { group: group },
       render: { fillStyle: "#060a19" },
@@ -135,7 +141,7 @@ export const tetris = (
     console.log(w4, gamePlace.clientWidth);
     let newShape = createShapes(
       shapes[Math.floor(Math.random() * shapes.length)],
-      400 + (Math.random() - 0.5) * 200
+      canvasSize.x / 2 + (Math.random() - 0.5) * (canvasSize.x / 4)
     );
     score += 4;
     cb("score", score);
@@ -162,7 +168,7 @@ export const tetris = (
   // fit the render viewport to the scene
   Render.lookAt(render, {
     min: { x: 0, y: 0 },
-    max: { x: 800, y: 800 },
+    max: { x: canvasSize.x, y: canvasSize.y },
   });
 
   Events.on(engine, "beforeUpdate", () => {
@@ -270,12 +276,6 @@ export const tetris = (
   });
 
   window.addEventListener("resize", () => {
-    render.bounds.max.x = gamePlace.clientWidth;
-    render.bounds.max.y = gamePlace.clientHeight;
-    render.options.width = gamePlace.clientWidth;
-    render.options.height = gamePlace.clientHeight;
-    render.canvas.width = gamePlace.clientWidth;
-    render.canvas.height = gamePlace.clientHeight;
     w4 = (gamePlace.clientWidth / 4) | 600;
     Matter.Render.setPixelRatio(render, window.devicePixelRatio); // added this
   });
