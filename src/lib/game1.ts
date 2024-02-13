@@ -1,30 +1,19 @@
 //var Example = Example || {};
 
-import Matter, { Bodies, Body, Common, Composite, Events } from "matter-js";
+import Matter, { Bodies, Body, Composite, Events } from "matter-js";
 import {
   EventClick,
   EventTouch,
   ShapeColors,
   ShapeDefs,
+  TButton,
   TShape,
 } from "./types";
-/*
-import * as decomp from "poly-decomp"; 
-Common.setDecomp(decomp);
-/*
-let elems = {
-    lshape: () => {
-        Composite.create()
-            }
-        
-    )
-}
-*/
-let force = 0.007;
-let friction = 0.5;
+let force = 0.005;
+let friction = 0.001;
 function createShapes(shape: TShape, xOffset: number) {
   let parts = [];
-  console.log("shape", shape);
+  console.log("shape", shape, "xOffset", xOffset);
   let definition = ShapeDefs[shape].split(",");
   for (let defindex = 0; defindex < definition.length; defindex += 2) {
     parts.push(
@@ -36,7 +25,7 @@ function createShapes(shape: TShape, xOffset: number) {
         {
           friction,
           frictionAir: 0.3,
-          frictionStatic: 30,
+          frictionStatic: 0.001,
           render: {
             fillStyle: "#" + ShapeColors[shape],
           },
@@ -47,13 +36,15 @@ function createShapes(shape: TShape, xOffset: number) {
   let lshape = Composite.create();
   let bodies = Body.create({
     parts,
+    friction,
+    frictionStatic: 0.001,
   });
   Composite.add(lshape, bodies);
   return lshape;
 }
 export const tetris = (
   gamePlace: HTMLElement,
-  cb: (data: { type: string; data: any }) => void
+  cb: (type: string, data: any) => void
 ) => {
   var Engine = Matter.Engine,
     Render = Matter.Render,
@@ -84,7 +75,7 @@ export const tetris = (
       //showIds: true,
       wireframes: false,
       //showAngleIndicator: true,
-      //   showCollisions: true,
+      showCollisions: true,
       //   showVelocity: true,
     },
   });
@@ -97,35 +88,6 @@ export const tetris = (
   Runner.run(runner, engine);
 
   var group = Body.nextGroup(true);
-  /*
-  var catapult = Bodies.rectangle(400, 550, 320, 20, {
-    label: "catapult",
-    collisionFilter: { group: group },
-    friction,
-  });
-  *
-  var catapult2 = Bodies.fromVertices(
-    400,
-    550,
-    [
-      [
-        { x: 16, y: 7 },
-        { x: 26, y: 17 },
-        { x: 167, y: 17 },
-        { x: 176, y: 7 },
-        { x: 167, y: 37 },
-        { x: 26, y: 37 },
-        { x: 16, y: 7 },
-      ],
-    ],
-    {
-      position: { x: 400, y: 550 },
-      label: "catapult",
-      collisionFilter: { group },
-      friction,
-    }
-  );
-  */
   let cataProp = {
     collisionFilter: { group },
     friction,
@@ -143,30 +105,19 @@ export const tetris = (
     ],
     ...cataProp,
   });
-  /*
-    Body.create({
-    vertices: [
-      { x: 16, y: 7 },
-      { x: 26, y: 17 },
-      { x: 167, y: 17 },
-      { x: 176, y: 7 },
-      { x: 167, y: 37 },
-      { x: 26, y: 37 },
-      { x: 16, y: 7 },
-    ],
-    bounds:
-    position: { x: 400, y: 550 },
-    label: "catapult",
-    collisionFilter: { group },
-    friction,
-  });
-  */
-  //hay.push(catapult);
+
+  var buttons = [
+    createButtons(50, 50, "rleft"),
+    createButtons(50, 350, "left"),
+    createButtons(750, 50, "rright"),
+    createButtons(750, 350, "right"),
+  ];
   hay.push(...catapult2.parts);
   activeBody = createShapes("mirrorl", 400);
   Composite.add(world, [
     //catapult,
     catapult2,
+    ...buttons,
     activeBody,
     Bodies.rectangle(400, 600, 800, 50.5, {
       label: "floor",
@@ -188,12 +139,13 @@ export const tetris = (
   ]);
   function shapeAddRandom() {
     let shapes = "l,mirrorl,T,box,stick,z,s".split(",") as TShape[];
+    console.log(w4, gamePlace.clientWidth);
     let newShape = createShapes(
       shapes[Math.floor(Math.random() * shapes.length)],
-      w4 / 2 + Math.random() * (w4 / 3)
+      400 + (Math.random() - 0.5) * 200
     );
     score += 4;
-    cb({ type: "score", data: score });
+    cb("score", score);
     Composite.add(world, newShape);
     activeBody = newShape;
   }
@@ -232,11 +184,60 @@ export const tetris = (
   function stopAll() {
     Matter.Render.stop(render);
     Matter.Runner.stop(runner);
-    // @ts-ignore
-    document.removeEventListener("click", ClickEvent);
-    // @ts-ignore
-    document.removeEventListener("touchstart", TouchEvent);
   }
+  function applyForce(type: TButton) {
+    let applyBody = activeBody.bodies[0];
+    let location = force;
+    switch (type) {
+      //@ts-ignore fallthrough
+      case "left":
+        location = -location;
+      case "right":
+        Body.applyForce(
+          applyBody,
+          {
+            x: applyBody.position.x,
+            y: applyBody.position.y,
+          },
+          {
+            x: location,
+            y: 0,
+          }
+        );
+        break;
+      //@ts-ignore fall through
+      case "rright":
+        location = -location;
+      case "rleft":
+        Body.applyForce(
+          applyBody,
+          {
+            x: applyBody.position.x,
+            y: applyBody.position.y - 10,
+          },
+          {
+            x: -location / 3,
+            y: 0,
+          }
+        );
+        Body.applyForce(
+          applyBody,
+          {
+            x: applyBody.position.x,
+            y: applyBody.position.y,
+          },
+          {
+            x: location / 3,
+            y: 0,
+          }
+        );
+    }
+  }
+  Events.on(mouseConstraint, "mousedown", (e) => {
+    console.log("tikladi ", e, mouseConstraint.body);
+    if (mouseConstraint.body) applyForce(mouseConstraint.body.label as TButton);
+  });
+
   Events.on(engine, "collisionStart", function (event) {
     var pairs = event.pairs;
 
@@ -268,66 +269,13 @@ export const tetris = (
         }
       }
 
-      if (weTouchedFloor) stopAll();
+      if (weTouchedFloor) {
+        stopAll();
+        cb("endGame", score);
+      }
     }
   });
-  function ClickEvent(event: EventClick) {
-    if (!activeBody) return;
-    let location = (0.5 - event.offsetX / event.target?.width) * force;
-    console.log(
-      "temp force ",
-      location,
-      event.offsetX,
-      event.target,
-      event.target?.width
-    );
-    if (!location) return;
-    if (event.offsetY < 200) {
-      Body.applyForce(
-        activeBody.bodies[0],
-        {
-          x: activeBody.bodies[0].position.x - 10,
-          y: activeBody.bodies[0].position.y - 10,
-        },
-        {
-          x: -location,
-          y: 0,
-        }
-      );
-      Body.applyForce(
-        activeBody.bodies[0],
-        {
-          x: activeBody.bodies[0].position.x,
-          y: activeBody.bodies[0].position.y,
-        },
-        {
-          x: location,
-          y: 0,
-        }
-      );
-      //);
-    } else {
-      activeBody.bodies.forEach((b) =>
-        Body.applyForce(b, b.position, {
-          x: -location * 2,
-          y: 0,
-        })
-      );
-    }
-  }
-  function TouchEvent(event: EventTouch) {
-    console.log("touchevent", event);
-    ClickEvent({
-      ...event,
-      target: event.target,
-      offsetX: event.touches[0].clientX,
-      offsetY: event.touches[0].clientY,
-    });
-  }
-  // @ts-ignore
-  document.addEventListener("click", ClickEvent);
-  // @ts-ignore
-  document.addEventListener("touchstart", TouchEvent);
+
   window.addEventListener("resize", () => {
     render.bounds.max.x = gamePlace.clientWidth;
     render.bounds.max.y = gamePlace.clientHeight;
@@ -335,7 +283,7 @@ export const tetris = (
     render.options.height = gamePlace.clientHeight;
     render.canvas.width = gamePlace.clientWidth;
     render.canvas.height = gamePlace.clientHeight;
-    w4 = (gamePlace.clientWidth / 4) | 0;
+    w4 = (gamePlace.clientWidth / 4) | 600;
     Matter.Render.setPixelRatio(render, window.devicePixelRatio); // added this
   });
   // context for MatterTools.Demo
@@ -347,3 +295,14 @@ export const tetris = (
     stopAll,
   };
 };
+
+function createButtons(x: number, y: number, sprite: string) {
+  return Bodies.rectangle(x, y, 100, 100, {
+    isStatic: true,
+    isSensor: true,
+    render: {
+      sprite: { texture: "/" + sprite + ".png", xScale: 0.7, yScale: 0.7 },
+    },
+    label: sprite,
+  });
+}

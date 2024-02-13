@@ -53,7 +53,14 @@ button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
-
+dialog {
+  width: calc(100% - 2em);
+  height: 50%;
+  max-width: 50%;
+}
+dialog::backdrop {
+  background: linear-gradient(90deg, #535bf233, #01010333, #535bf233);
+}
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

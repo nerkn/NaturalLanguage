@@ -8,6 +8,7 @@ export type TetrisGame = {
   stopAll: () => void;
 };
 export type TShape = "l" | "mirrorl" | "T" | "box" | "stick" | "z" | "s";
+export type TButton = "left" | "right" | "rleft" | "rright";
 export const ShapeDefs: Record<TShape, string> = {
   l: "0,0,1,0,1,1,1,2",
   mirrorl: "0,0,1,0,0,1,0,2",
