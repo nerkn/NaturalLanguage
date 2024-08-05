@@ -36,3 +36,13 @@ export type EventTouch = {
   target: HTMLElement & { width: number };
   touches: { clientX: number; clientY: number }[];
 };
+
+export interface DraggableProps {
+  id: string;
+  children: React.ReactNode;
+}
+
+export interface DroppableProps {
+  id: string;
+  children: React.ReactNode;
+}

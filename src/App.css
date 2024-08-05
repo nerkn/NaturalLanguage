@@ -37,24 +37,6 @@ h1 {
   line-height: 1.1;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
 dialog {
   width: calc(100% - 2em);
   height: 50%;
@@ -66,6 +48,16 @@ dialog::backdrop {
 .flex {
   display: flex;
 }
+.flexChildGrow>*{
+  flex-grow: 1;
+}
+.column{
+  flex-direction:column
+}
+  .gap{
+    gap: .5rem;
+  }
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -90,4 +82,80 @@ dialog::backdrop {
 }
 .l-0 {
   left: 0;
+}
+.subElems{
+  display: none;
+  gap:1rem;
+
+}
+.subElems div{ 
+  text-align: center;
+  border-radius: 1rem;
+  background-image: linear-gradient(45deg, #ffffb6, #ddffc3);
+  border: 1px solid #ddffc3;
+}
+.subElems.opened{
+  display: flex;
+}
+.fillInTheBlanks{
+  .Blanks {    
+    padding: 8px;
+    margin: 4px;
+    min-height: 30px;
+    min-width: 100px;
+    background-color: lightgrey;
+    text-align: center;
+    display: inline-block;
+  }
+  .Words{ 
+    padding: 8px;
+    margin: 4px;
+    background-color: lightblue;
+    cursor: grab
+  }
+}
+
+.button,
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-image: linear-gradient(45deg, black, transparent);
+  cursor: pointer; 
+  color: #d2dfe9;
+  transition: border-color 0.25s;
+}
+.button:hover ,
+button:hover {
+  border-color: #d3d4f0;
+}
+button:focus,
+.button:focus,
+button:focus-visible ,
+.button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+.Droppable  {    
+  padding: 8px;
+  margin: 4px;
+  min-height: 30px;
+  min-width: 100px;
+  background-color: lightgrey;
+  text-align: center;
+  display: inline-block;
+}
+.Draggable{ 
+  padding: 8px;
+  margin: 4px;
+  background-color: lightblue;
+  cursor: grab
+}
+.correct{
+  background-color: rgb(176, 255, 187);
+}
+.false{
+  background-color: rgb(255, 165, 165);
 }
