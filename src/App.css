@@ -25,11 +25,10 @@ canvas {
   border: 1px solid #eee;
 }
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
+  margin: 0; 
   min-width: 320px;
   min-height: 100vh;
+  width: 100vw;
 }
 
 h1 {
@@ -86,13 +85,16 @@ dialog::backdrop {
 .subElems{
   display: none;
   gap:1rem;
+  flex-wrap: wrap;
 
 }
 .subElems div{ 
   text-align: center;
   border-radius: 1rem;
-  background-image: linear-gradient(45deg, #ffffb6, #ddffc3);
+  background-image: linear-gradient(45deg, #fffabc, #f3fbed);
   border: 1px solid #ddffc3;
+  padding: 0.5rem 1rem;
+  margin: 1rem;
 }
 .subElems.opened{
   display: flex;
