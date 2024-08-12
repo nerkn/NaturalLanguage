@@ -99,37 +99,83 @@ dialog::backdrop {
 .subElems.opened{
   display: flex;
 }
-.fillInTheBlanks{
-  .Blanks {    
-    padding: 8px;
-    margin: 4px;
-    min-height: 30px;
-    min-width: 100px;
-    background-color: lightgrey;
-    text-align: center;
-    display: inline-block;
-  }
-  .Words{ 
-    padding: 8px;
-    margin: 4px;
-    background-color: lightblue;
-    cursor: grab
-  }
+.fillInTheBlanks{ 
 }
 
 .button,
 button {
-  border-radius: 8px;
+  border-radius: 25% 86% 100% 15%/ 100% 62% 76% 25%;
   border: 1px solid transparent;
-  padding: 0.6em 1.2em;
+  padding: 1.2em 2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-image: linear-gradient(45deg, black, transparent);
+  background-image:   linear-gradient(180deg, #a30640, #690202, #9f0606);
   cursor: pointer; 
   color: #d2dfe9;
   transition: border-color 0.25s;
 }
+
+button.v1,
+.button.v1{
+  background-image:   linear-gradient(180deg, #a30640, #690202, #9f0606);
+  border-radius: 86% 25% 100% 15%/ 62% 100%  76% 25%;	
+}
+
+ button.v2,
+.button.v2{
+  background-image: linear-gradient(180deg, #FF7E5F, #FEB47B, #FF6F61);
+  border-radius: 70% 30% 60% 40%/50% 70% 50% 30%;
+}
+ 
+.button.v3,
+.button.v3{
+  background-image: linear-gradient(180deg, #34e89e, #0f3443, #2b5876);
+  border-radius: 50% 50% 70% 30%/40% 60% 50% 50%;
+}
+ 
+ button.v4,
+.button.v4{
+  background-image: linear-gradient(180deg, #f83600, #f9d423, #FDC830);
+  border-radius: 80% 20% 90% 10%/60% 80% 70% 20%;
+}
+
+.button.v5{
+  background-image: linear-gradient(180deg, #c33764, #1d2671, #833ab4);
+  border-radius: 30% 70% 30% 70%/40% 60% 40% 60%;
+}
+
+.button.v6{
+  background-image: linear-gradient(180deg, #6a11cb, #2575fc, #3494e6);
+  border-radius: 85% 15% 75% 25%/70% 30% 60% 40%;
+}
+
+.button.v7{
+  background-image: linear-gradient(180deg, #ff512f, #dd2476, #e52d27);
+  border-radius: 60% 40% 50% 50%/50% 50% 50% 50%;
+}
+
+.button.v8{
+  background-image: linear-gradient(180deg, #DA4453, #89216B, #9B59B6);
+  border-radius: 20% 80% 20% 80%/30% 70% 40% 60%;
+}
+
+.button.v9{
+  background-image: linear-gradient(180deg, #22c1c3, #fdbb2d, #ffd200);
+  border-radius: 40% 60% 40% 60%/50% 50% 50% 50%;
+}
+
+.button.v10{
+  background-image: linear-gradient(180deg, #f12711, #f5af19, #fc466b);
+  border-radius: 75% 25% 85% 15%/65% 35% 55% 45%;
+}
+
+.button.v11{
+  background-image: linear-gradient(180deg, #0f2027, #203a43, #2c5364);
+  border-radius: 35% 65% 45% 55%/55% 45% 35% 65%;
+}
+
+
 .button:hover ,
 button:hover {
   border-color: #d3d4f0;
@@ -155,9 +201,26 @@ button:focus-visible ,
   background-color: lightblue;
   cursor: grab
 }
+.Draggable.used{
+  background-color: rgba(173, 216, 230, 64);
+}
 .correct{
   background-color: rgb(176, 255, 187);
 }
 .false{
   background-color: rgb(255, 165, 165);
+}
+
+.dialog-person,
+.dialog-msg {
+    display: inline-block;
+    margin-right: 1rem;
+}
+
+.Dictionary{
+  border: 1px solid #33f;
+  padding: 1rem;
+  h3 {
+    
+  }
 }

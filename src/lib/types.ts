@@ -40,9 +40,42 @@ export type EventTouch = {
 export interface DraggableProps {
   id: string;
   children: React.ReactNode;
+  used?: boolean;
 }
 
 export interface DroppableProps {
   id: string;
   children: React.ReactNode;
 }
+export type DialogOption = {
+  id: number;
+  person: string;
+  msg: string;
+  options: number[];
+};
+
+type Meaning = [string, string, string[], string[]];
+
+export interface DictionaryEntry {
+  MEANINGS: Meaning[];
+  ANTONYMS: string[];
+  SYNONYMS: string[];
+}
+
+/*
+"ABACK": {"MEANINGS": [
+  [
+    "Adverb", 
+    "having the wind against the forward side of the sails", 
+    [], 
+    ["the ship came up into the wind with all yards aback"]
+], [
+  "Adverb", 
+  "by surprise", 
+  [], 
+  ["taken aback by the caustic remarks"]
+]
+], 
+"ANTONYMS": [], 
+"SYNONYMS": ["Aback"]},
+*/

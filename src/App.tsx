@@ -7,7 +7,9 @@ import { CompoundSentences } from "./pages/CompoundSentences";
 import { SubordinatingConjunctions } from "./pages/SubordinatingConjunctions";
 import { Synonyms } from "./pages/Synonims";
 import { MovieQuotes } from "./pages/MovieQuotes";
+import { Dialogs } from "./pages/Dialogs";
 import { Menu } from "./components/molecules/Menu";
+import { Progress } from "./pages/Progress"
 
 function App() {
   return (
@@ -20,7 +22,8 @@ function App() {
         <Route path="/game" component={Room} />
         <Route path="/Synonyms" component={Synonyms} />
         <Route path="/MovieQuotes" component={MovieQuotes} />
-        <Route path="/Giydir" component={Giydir} />
+        <Route path="/Dialogs" component={Dialogs} />
+        <Route path="/profile/Progress" component={Progress} />
       </Switch>
     </>
   );

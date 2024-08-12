@@ -1,35 +1,22 @@
-import React, { useMemo, useState } from 'react';
-import { DndContext, useDraggable, useDroppable, DragEndEvent } from '@dnd-kit/core';
+import React, { useEffect, useMemo, useState } from 'react';
+import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import { makeBlanks } from '../../lib/makeBlanks';
-import { DraggableProps, DroppableProps } from '../../lib/types';
+import { Droppable } from '../atoms/Droppable';
+import { Draggable } from '../atoms/Draggable';
+import useProgressStore from '../../lib/stores/progress';
 
-const Draggable: React.FC<DraggableProps> = ({ id, children }) => {
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({ id });
-  const style = {
-    transform: `translate3d(${transform?.x ?? 0}px, ${transform?.y ?? 0}px, 0)`,
-  };
+const modulename = "SubordinatingConjunction"
+const blank = "____"
 
-  return (
-    <div ref={setNodeRef} style={style} className='Words' {...listeners} {...attributes}>
-      {children}
-    </div>
-  );
-};
-
-
-const Droppable: React.FC<DroppableProps> = ({ id, children }) => {
-  const { setNodeRef } = useDroppable({ id }); 
-
-  return (
-    <div ref={setNodeRef} className="Blanks">
-      {children}
-    </div>
-  );
-};
-
-export function SubordinatingConjunction ({ sentence }: { sentence: string  })  {
-  let {sentence: sentenceWithBlanks, blanks }= useMemo(()=> makeBlanks(sentence), [sentence])
+export function SubordinatingConjunction({ sentence }: { sentence: string }) {
+  const progress = useProgressStore()
+  let { sentence: sentenceWithBlanks, blanks } = useMemo(() => makeBlanks(sentence), [sentence])
   const [userAnswers, setUserAnswers] = useState<{ [key: string]: string }>({});
+
+  useEffect(() => {
+    if (Object.values(userAnswers).length == blanks.length)
+      setTimeout(checkAnswers, 10)
+  }, [userAnswers])
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { over, active } = event;
@@ -42,13 +29,11 @@ export function SubordinatingConjunction ({ sentence }: { sentence: string  })  
   };
 
   const checkAnswers = () => {
-    const correctAnswers = blanks.every((blank, index) => userAnswers[`blank-${index}`] === blank);
-    alert(correctAnswers ? 'Correct!' : 'Incorrect.');
+    const checked = blanks.every((blank, index) => userAnswers[`blank-${index}`] === blank);
+    progress.addOrUpdateProgress(modulename, sentence, "", 1, checked ? "completed" : "error")
+    alert(checked ? 'Correct!' : 'Incorrect.');
   };
-  console.log(sentence)
-  console.log(sentenceWithBlanks)
-  console.log(blanks)
-  
+
   return (
     <DndContext onDragEnd={handleDragEnd}>
       <div className='fillInTheBlanks'>
@@ -60,7 +45,7 @@ export function SubordinatingConjunction ({ sentence }: { sentence: string  })  
               const id = `blank-${match[1]}`;
               return (
                 <Droppable key={index} id={id}>
-                  {userAnswers[id] || '____'}
+                  {userAnswers[id] || blank}
                 </Droppable>
               );
             }
@@ -80,4 +65,4 @@ export function SubordinatingConjunction ({ sentence }: { sentence: string  })  
     </DndContext>
   );
 };
- 
+

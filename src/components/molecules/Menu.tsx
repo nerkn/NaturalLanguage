@@ -8,5 +8,7 @@ export function Menu() {
             <Link href="/SubordinatingConjunctions">Subordinating Conjunctions</Link>
             <Link href="/Synonyms">Synonyms</Link>
             <Link href="/MovieQuotes">MovieQuotes</Link>
+            <Link href="/Dialogs">Dialogs</Link>
+            <Link href="/profile/Progress">Progress</Link>
         </div>)
 }

@@ -18,9 +18,13 @@ interface ProgressStore {
         favoriteToAddOrRemove?: string
     ) => void;
     resetProgress: () => void;
+    getProgress: (
+        modulename: string,
+        identifier: string,
+        id2: string) => Progress[]
 }
 
-const useProgressStore = create<ProgressStore>((set) => ({
+const useProgressStore = create<ProgressStore>((set, get) => ({
     progress: [],
     addOrUpdateProgress: (
         modulename: string,
@@ -65,6 +69,9 @@ const useProgressStore = create<ProgressStore>((set) => ({
         }
     }),
     resetProgress: () => set({ progress: [] }),
+    getProgress(modulename, identifier, id2) {
+        return get().progress.filter(p => (p.modulename == modulename && p.identifier == identifier && p.id2 == id2))
+    },
 }));
 
 export default useProgressStore;
