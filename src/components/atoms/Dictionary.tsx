@@ -1,9 +1,11 @@
+import { useState } from "react";
 import dic from "../../data/merged.json";
 import { DictionaryEntry } from "../../lib/types";
 
 
 
 export function Dictionary({ word }: { word: string }) {
+    const [other, otherSet] = useState("")
     let def = (dic as Record<string, DictionaryEntry>)[word.toUpperCase()]
     if (!def)
         return <div className="dic">
@@ -19,8 +21,12 @@ export function Dictionary({ word }: { word: string }) {
                 <div> {dm[3].map((s, i) => <div><>{i + 1}</> {s}</div>)}</div>
             </div>
         </div>)}</div>
-        <div>{def.SYNONYMS.map(dm => <div>{dm}</div>)}</div>
-
+        <div>
+            {def.SYNONYMS.map(dm => <div onMouseEnter={() => otherSet(dm)}>{dm}</div>)}
+            {def.ANTONYMS.map(dm => <div onMouseEnter={() => otherSet(dm)}>{dm}</div>)}
+        </div>
+        <div>
+            {other ? <Dictionary word={other} /> : <></>}</div>
     </div>
 
 }
